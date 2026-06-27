@@ -8,6 +8,9 @@ build/
 ### Spring Boot ###
 out/
 
+
+../.idea
+
 ### IntelliJ IDEA ###
 .idea/
 *.iml
