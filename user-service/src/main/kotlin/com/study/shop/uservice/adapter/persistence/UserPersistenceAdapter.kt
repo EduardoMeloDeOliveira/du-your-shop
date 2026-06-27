@@ -2,7 +2,9 @@ package com.study.shop.uservice.adapter.persistence
 
 import com.study.shop.uservice.core.domain.User
 import com.study.shop.uservice.core.port.UserRepositoryPort
+import org.springframework.stereotype.Component
 
+@Component
 class UserPersistenceAdapter(
     private val userRepository: UserJpaRepository
 ) : UserRepositoryPort {
