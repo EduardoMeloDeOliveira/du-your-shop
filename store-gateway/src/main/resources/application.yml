@@ -1,0 +1,63 @@
+server:
+  port: 8080
+
+
+spring:
+  application:
+    name: store-gateway
+  cloud:
+    gateway:
+      routes:
+        - id: user-register
+          uri: http://localhost:8086
+          predicates:
+            - Path=/auth/register
+          filters:
+            - StripPrefix=1
+
+        - id: identity-autt
+          uri: http://localhost:8085
+          predicates:
+            - Path=/auth/**
+
+        - id: user-admin
+          uri: http://localhost:8084
+          predicates:
+              - Path=/api/admin/users,api/admin/users/**
+          filters:
+            - StripPrefix=1
+
+        - id: catalog-admin
+          uri: http://localhost:8084
+          predicates:
+            - Path=/api/admin/**
+          filters:
+            - StripPrefix=1
+
+        - id: catalog-products
+          uri: http://localhost:8084
+          predicates:
+            - Path=/api/products,api/products/**
+          filters:
+            - StripPrefix=1
+
+        - id: store-bff
+          uri: htttp://localhost:8081
+          predicates:
+            - Path=/api/**
+          filters:
+            - StripPrefix=1
+
+    security:
+      oauth2:
+        resourceserver:
+          jwt:
+            secret: dudu-big-dick
+
+jwt:
+  secret: dudu-big-dick
+
+logging:
+  level:
+    org.springframework.cloud.gateway: INFO
+
