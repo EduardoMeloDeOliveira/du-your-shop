@@ -1,5 +1,6 @@
+
 services:
-  postres:
+  postgres:
     image: postgres:16-alpine
     container_name: shop-postgres
     environment:
@@ -8,12 +9,13 @@ services:
       POSTGRES_DB: shop
     ports:
       - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U shop -d shop"]
-      interval: 10s
+      interval: 5s
       timeout: 5s
-      retries: 5
-
+      retries: 10
 
   redis:
     image: redis:7-alpine
@@ -21,10 +23,10 @@ services:
     ports:
       - "6379:6379"
     healthcheck:
-      test: ["CMD" , "redis-cli ping | grep PONG"]
-      interval: 10s
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 10
 
   redpanda:
     image: redpandadata/redpanda:v24.2.7
@@ -32,31 +34,33 @@ services:
     command:
       - redpanda
       - start
-      - --smp 1
+      - --smp=1
       - --memory=1G
       - --reserve-memory=0M
-      - --overprovisoned
+      - --overprovisioned
       - --node-id=0
       - --check=false
-      - -kafka-addr=PLAINTEXT://0.0.0.0:29092,OUTSIDE://0.0.0.0/9092
+      - --kafka-addr=PLAINTEXT://0.0.0.0:29092,OUTSIDE://0.0.0.0:9092
       - --advertise-kafka-addr=PLAINTEXT://redpanda:29092,OUTSIDE://localhost:9092
     ports:
-      - "29092:29092"
       - "9092:9092"
+      - "29092:29092"
     healthcheck:
       test: ["CMD-SHELL", "rpk cluster health | grep -q 'Healthy:.*true'"]
-      interval: 10s
+      interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 10
 
   redpanda-console:
-    image: redpandata/console:v2.7.2
+    image: redpandadata/console:v2.7.2
     container_name: shop-redpanda-console
     depends_on:
       redpanda:
         condition: service_healthy
     environment:
-      KAFKA_BROKERS: redpanda:9092
+      KAFKA_BROKERS: redpanda:29092
     ports:
-      - "8080:8080"
+      - "8088:8080"
 
+volumes:
+  postgres-data:
