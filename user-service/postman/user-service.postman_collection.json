@@ -1,0 +1,136 @@
+{
+  "info": {
+    "name": "user-service",
+    "description": "Collection dos endpoints do user-service (du-your-shop).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8085"
+    }
+  ],
+  "item": [
+    {
+      "name": "Registration",
+      "item": [
+        {
+          "name": "Register customer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"john.doe\",\n  \"password\": \"secret123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["register"]
+            },
+            "description": "Registra um novo usuario com role CUSTOMER. Retorna 201 com UserResponse."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Admin Users",
+      "item": [
+        {
+          "name": "Create user",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin.user\",\n  \"password\": \"secret123\",\n  \"role\": \"STORE_ADMIN\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "users"]
+            },
+            "description": "Cria um usuario com role explicita (CUSTOMER ou STORE_ADMIN). Retorna 201 com UserResponse."
+          },
+          "response": []
+        },
+        {
+          "name": "List users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "users"]
+            },
+            "description": "Lista todos os usuarios."
+          },
+          "response": []
+        },
+        {
+          "name": "Set user active",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"active\": false\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/users/{{username}}/active",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "users", "{{username}}", "active"]
+            },
+            "description": "Ativa/desativa um usuario pelo username. Retorna UserResponse."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Internal",
+      "item": [
+        {
+          "name": "Verify credentials",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"john.doe\",\n  \"password\": \"secret123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/internal/users/verify",
+              "host": ["{{baseUrl}}"],
+              "path": ["internal", "users", "verify"]
+            },
+            "description": "Verifica credenciais. Retorna 200 com VerifyResponse (username, role) ou 400 se invalidas/inativo."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
